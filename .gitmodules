@@ -1,0 +1,3 @@
+[submodule "my-home/wallpapers"]
+	path = my-home/wallpapers
+	url = git@github.com:RexP10r/wallpapers.git
