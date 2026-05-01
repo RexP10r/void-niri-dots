@@ -5,6 +5,7 @@ if ! command -v wallust &>/dev/null; then
     export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
+WALL_PATH=""
 while [[ $# -gt 0 ]]; do
 	case $1 in
 		--wall-path)
