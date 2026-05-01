@@ -83,9 +83,9 @@ layout {
     border {
         //off
         width 4
-        active-color "#BDB2C0"
-        inactive-color "#DEA98E"
-        urgent-color "#C3888C"
+        active-color "#9E9091"
+        inactive-color "#CC9285"
+        urgent-color "#C87D85"
     }
 
 	tab-indicator {
@@ -104,7 +104,7 @@ layout {
     }
 	insert-hint {
         // off
-        color "#9ABCD1"
+        color "#8697AF"
     }
 
 }
