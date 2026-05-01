@@ -1,0 +1,81 @@
+@import "wallust.rasi"
+
+* {
+    font: "JetBrainsMono Nerd Font 12";
+
+    background-color: @background;
+    text-color:       @foreground;
+    border-color:     @border;
+    highlight-color:  @selected;
+    cursor-color:     @selected;
+
+    alternate-foreground: @foreground;
+    alternate-background: @background;
+    
+    normal-foreground:    @foreground;
+    normal-background:    @background;
+    
+    selected-foreground:  @background;
+    selected-background:  @selected;
+    
+    active-foreground:    @foreground;
+    active-background:    @background;
+    
+    urgent-foreground:    @foreground;
+    urgent-background:    @background;
+}
+
+window, mainbox, inputbar, prompt, textbox-prompt-colon, entry,
+listview, element, element-icon, element-text mode-switcher,
+button, message {
+    background-color: @background;
+    text-color:       @foreground;
+	border-color:	  @border;
+}
+
+button {
+    background-color: @background;
+    text-color:       @foreground;
+    padding:          6px 8px;
+}
+
+button selected {
+    background-color: @selected;
+    text-color:       @background;
+    border-radius:    6px;
+}
+
+
+element normal.normal {
+    background-color: @background;
+    text-color:       @foreground;
+}
+element alternate.normal {
+    background-color: @background;
+    text-color:       @foreground;
+}
+element selected.normal {
+    background-color: @selected;
+    text-color:       @background;
+}
+element normal.active, element alternate.active {
+    background-color: @background;
+    text-color:       @foreground;
+}
+element selected.active {
+    background-color: @selected;
+    text-color:       @background;
+}
+
+element normal.hover {
+    background-color: @background-alt;
+    text-color:       @foreground;
+}
+element alternate.hover {
+    background-color: @background-alt;
+    text-color:       @foreground;
+}
+element selected.hover {
+    background-color: @selected;
+    text-color:       @background;
+}

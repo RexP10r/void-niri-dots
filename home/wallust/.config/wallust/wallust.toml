@@ -1,0 +1,30 @@
+# full - resized - wal - thumb -  fastresize - kmeans
+backend = "fastresize"
+
+# lab - labmixed - lch - lchmixed
+color_space = "lab"
+
+# dark - dark16 - darkcomp - darkcomp16
+# light - light16 - lightcomp - lightcomp16
+# harddark - harddark16 - harddarkcomp - harddarkcomp16
+# softdark - softdark16 - softdarkcomp - softdarkcomp16
+# softlight - softlight16 - softlightcomp - softlightcomp16
+palette = "softdark"
+
+check_contrast = true
+
+# Color saturation, between [1% and 100%] (OPTIONAL, disabled by default)
+#saturation = 35
+
+# Alpha value for templating, by default 100 (no other use whatsoever)
+#alpha = 100
+
+[json]
+enabled = true
+
+[templates]
+general = {src = 'general.json' , dst = '~/.cache/wallust/colors.json'}
+alacritty = { template = 'alacritty.toml', target = '~/.config/alacritty/colors.toml' }
+rofi = { src = 'rofi.rasi', dst = '~/.config/rofi/default/wallust.rasi' }
+
+
