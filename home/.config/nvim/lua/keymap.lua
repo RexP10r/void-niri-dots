@@ -12,3 +12,4 @@ vim.keymap.set("n", "<Leader>fo", ":lua vim.lsp.buf.format()<CR>", opts)
 
 vim.api.nvim_set_keymap('i', 'jj', '<Esc>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('t', 'jj', '<C-\\><C-n>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', 'U', '<C-r>', { noremap = true })
