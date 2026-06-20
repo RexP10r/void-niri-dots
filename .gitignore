@@ -2,3 +2,7 @@ refs/
 root/
 src/
 pipewire/
+mpd/
+ncmpcpp/
+xdg-desktop-portal/
+rtorrent/
