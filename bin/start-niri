@@ -2,5 +2,4 @@
 # wrapper script for niri
 
 export WLR_DRM_DEVICES=/dev/dri/card0
-
-exec niri "$@"
+exec dbus-run-session niri --session "$@"
