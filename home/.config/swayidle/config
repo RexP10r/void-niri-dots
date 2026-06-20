@@ -1,2 +1,22 @@
-timeout 600 'swaylock -f'
-before-sleep 'swaylock -f'
+timeout 600 'swaylock --screenshots \
+		--ignore-empty-password \
+		--daemonize \
+		--indicator-caps-lock \
+		--indicator \
+		--clock \
+		--timestr "󰥔 %Hh %Mm %Ss"\
+		--datestr "󰃭 %b-%d-%Y" \
+		--show-failed-attempts \
+		--indicator-idle-visible \
+		-f'
+before-sleep 'swaylock --screenshots \
+		--ignore-empty-password \
+		--daemonize \
+		--indicator-caps-lock \
+		--indicator \
+		--clock \
+		--timestr "󰥔 %Hh %Mm %Ss"\
+		--datestr "󰃭 %b-%d-%Y" \
+		--show-failed-attempts \
+		--indicator-idle-visible' \
+		-f'
