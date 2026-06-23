@@ -6,3 +6,6 @@ mpd/
 ncmpcpp/
 xdg-desktop-portal/
 rtorrent/
+opencode/
+models/
+launch-llama-server
