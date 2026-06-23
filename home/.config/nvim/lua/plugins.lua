@@ -1,3 +1,5 @@
+_G.nvim_start_time = vim.uv.hrtime()
+
 vim.pack.add({
 	{ src = "https://github.com/folke/tokyonight.nvim" },
 })
@@ -113,14 +115,14 @@ require("nvim-autopairs").setup({
 })
 
 vim.pack.add({
-    'https://github.com/nvim-treesitter/nvim-treesitter',
-    'https://github.com/nvim-mini/mini.nvim',
-    'https://github.com/nvim-mini/mini.icons',
-    'https://github.com/nvim-tree/nvim-web-devicons',
-    'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+	'https://github.com/nvim-treesitter/nvim-treesitter',
+	'https://github.com/nvim-mini/mini.nvim',
+	'https://github.com/nvim-mini/mini.icons',
+	'https://github.com/nvim-tree/nvim-web-devicons',
+	'https://github.com/MeanderingProgrammer/render-markdown.nvim',
 })
 require('render-markdown').setup({
-    completions = { lsp = { enabled = true } },
+	completions = { lsp = { enabled = true } },
 })
 
 vim.pack.add({
@@ -160,4 +162,66 @@ vim.pack.add({
 	{ src = "https://github.com/numToStr/Comment.nvim" },
 })
 require('Comment').setup({
+})
+vim.pack.add({
+	{ src = "https://github.com/nvimdev/dashboard-nvim" },
+})
+
+require("dashboard").setup({
+	theme = "doom",
+	config = {
+		vertical_center = true,
+		header = {
+			"███████╗██╗███╗   ██╗ ██████╗ ███████╗██████╗ ██╗   ██╗██╗███╗   ███╗",
+			"██╔════╝██║████╗  ██║██╔════╝ ██╔════╝██╔══██╗██║   ██║██║████╗ ████║",
+			"█████╗  ██║██╔██╗ ██║██║  ███╗█████╗  ██████╔╝██║   ██║██║██╔████╔██║",
+			"██╔══╝  ██║██║╚██╗██║██║   ██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██║██║╚██╔╝██║",
+			"██║     ██║██║ ╚████║╚██████╔╝███████╗██║  ██║ ╚████╔╝ ██║██║ ╚═╝ ██║",
+			"╚═╝     ╚═╝╚═╝  ╚═══╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝╚═╝     ╚═╝",
+		},
+
+		center = {
+			{
+				icon = " ",
+				desc = "New File",
+				action = "ene | startinsert",
+				key = "n",
+			},
+			{
+				icon = " ",
+				desc = "Find File",
+				action = "FzfLua files",
+				key = "f",
+			},
+			{
+				icon = " ",
+				desc = "Find Text",
+				action = "FzfLua live_grep",
+				key = "g",
+			},
+			{
+				icon = " ",
+				desc = "File Explorer",
+				action = "Neotree toggle",
+				key = "e",
+			},
+			{
+				icon = " ",
+				desc = "Configure",
+				action = "edit ~/.config/nvim",
+				key = "c",
+			},
+			{
+				icon = " ",
+				desc = "Quit",
+				action = "qa",
+				key = "q",
+			},
+		},
+		footer = function()
+			local end_time = vim.uv.hrtime()
+			local total_ms = (end_time - (_G.nvim_start_time or end_time)) / 1000000
+			return { string.format("Loaded in %.2f ms", total_ms) }
+		end,
+	},
 })
