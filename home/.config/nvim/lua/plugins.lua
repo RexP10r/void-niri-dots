@@ -122,3 +122,12 @@ vim.pack.add({
 require('render-markdown').setup({
     completions = { lsp = { enabled = true } },
 })
+
+vim.pack.add({
+	{ src = "https://github.com/sudo-tee/opencode.nvim" },
+})
+
+require("opencode").setup({})
+-- <leader>og : Toggle the opencode chat window open/closed.
+-- <leader>os : Select files to add as context to your chat.
+-- <leader>oq : Open a "quick chat" (a floating window for a fast question).
