@@ -114,9 +114,9 @@ require("nvim-autopairs").setup({
 
 vim.pack.add({
     'https://github.com/nvim-treesitter/nvim-treesitter',
-    'https://github.com/nvim-mini/mini.nvim',            -- if you use the mini.nvim suite
-    'https://github.com/nvim-mini/mini.icons',        -- if you use standalone mini plugins
-    'https://github.com/nvim-tree/nvim-web-devicons', -- if you prefer nvim-web-devicons
+    'https://github.com/nvim-mini/mini.nvim',
+    'https://github.com/nvim-mini/mini.icons',
+    'https://github.com/nvim-tree/nvim-web-devicons',
     'https://github.com/MeanderingProgrammer/render-markdown.nvim',
 })
 require('render-markdown').setup({
@@ -128,6 +128,36 @@ vim.pack.add({
 })
 
 require("opencode").setup({})
--- <leader>og : Toggle the opencode chat window open/closed.
--- <leader>os : Select files to add as context to your chat.
--- <leader>oq : Open a "quick chat" (a floating window for a fast question).
+
+vim.pack.add({
+	{ src = "https://github.com/nanozuki/tabby.nvim" },
+})
+require('tabby').setup({})
+
+
+vim.pack.add({
+	{ src = "https://github.com/rcarriga/nvim-notify" },
+	{ src = "https://github.com/folke/noice.nvim" },
+})
+require("noice").setup({
+	lsp = {
+		override = {
+			["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+			["vim.lsp.util.stylize_markdown"] = true,
+		},
+	},
+	presets = {
+		bottom_search = true,
+		command_palette = true,
+		long_message_to_split = true,
+		lsp_doc_border = true,
+	},
+})
+vim.opt.termguicolors = true
+
+
+vim.pack.add({
+	{ src = "https://github.com/numToStr/Comment.nvim" },
+})
+require('Comment').setup({
+})
