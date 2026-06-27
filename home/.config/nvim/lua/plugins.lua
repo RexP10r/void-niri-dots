@@ -123,13 +123,8 @@ vim.pack.add({
 })
 require('render-markdown').setup({
 	completions = { lsp = { enabled = true } },
+	anti_conceal = { enabled = false },
 })
-
-vim.pack.add({
-	{ src = "https://github.com/sudo-tee/opencode.nvim" },
-})
-
-require("opencode").setup({})
 
 vim.pack.add({
 	{ src = "https://github.com/nanozuki/tabby.nvim" },
