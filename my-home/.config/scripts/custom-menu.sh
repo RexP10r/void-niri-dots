@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Configuration
 ROFI_CMD="rofi -config ~/.config/rofi/default/config.rasi -dmenu -i -p"
 WALLPAPER_DIR="$HOME/.config/wallpapers"
 BGSELECTOR="$HOME/.config/scripts/bgselect.sh"
 
-THEMES=("Catppuccin" "Nord" "Everforest" "Gruvbox", "Osaka")
-
-# --- Menu Functions ---
+THEMES=("Catppuccin" "Nord" "Everforest" "Gruvbox" "Osaka")
 
 show_menu() {
     local prompt="$1"
@@ -29,7 +26,7 @@ main_menu() {
 
 window_rounding_menu() {
     local choice
-    choice=$(show_menu "Window rounding" "On (8px)" "Off (0px)" "Custom")
+    choice=$(show_menu "Window rounding" "On (8px)" "Off (0px)" "Custom" "Back to main menu")
     
     case "$choice" in
         "On (8px)")
@@ -45,23 +42,24 @@ window_rounding_menu() {
                 "$HOME/.config/scripts/rounding.sh" "$custom"
             fi
             ;;
-        "") main_menu ;;
+        ""|"Back to main menu") main_menu ;;
     esac
 }
 
 wallpaper_theme_menu() {
     local choice
-    choice=$(show_menu "Select theme" "${THEMES[@]}")
+    choice=$(show_menu "Select theme" "${THEMES[@]}" "Back to main menu")
 
 	[[ -z "$choice" ]] && exit 0
     
     local theme_lower="${choice,,}"
     
     case "$choice" in
+		# TODO
         "random")
             "$BGSELECTOR" --wall-dir "$WALLPAPER_DIR"
             ;;
-        "") exit 0 ;;
+        ""|"Back to main menu") main_menu ;;
         *) wallpaper_variation_menu "$theme_lower" ;;
     esac
 }
@@ -69,7 +67,7 @@ wallpaper_theme_menu() {
 wallpaper_variation_menu() {
     local theme="$1"
     local choice
-    choice=$(show_menu "$theme variation" "Dark" "Light")
+    choice=$(show_menu "$theme variation" "Dark" "Light" "Back to theme selection menu")
     
     case "$choice" in
         "Dark")
@@ -88,7 +86,7 @@ wallpaper_variation_menu() {
                 notify-send "Error" "Directory not found: $path"
             fi
             ;;
-        "") wallpaper_theme_menu ;;
+        ""|"Back to theme selection menu") wallpaper_theme_menu ;;
     esac
 }
 
