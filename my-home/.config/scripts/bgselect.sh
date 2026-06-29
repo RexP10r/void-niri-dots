@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-WALL_DIR="$HOME/.config/wallpapers"
 CACHE_DIR="$HOME/.cache/thumbnails/bgselector"
 CACHE_INDEX="$CACHE_DIR/.index"
 ONLY_WALLS=false
@@ -8,13 +7,9 @@ ONLY_COLORS=false
 
 while [[ $# -gt 0 ]]; do
 	case $1 in
-		--only-walls)
-			ONLY_WALLS=true
-			shift
-			;;
-		--only-colors)
-			ONLY_COLORS=true
-			shift
+		--wall-dir)
+			WALL_DIR="$2"
+			shift 2
 			;;
 		*)
 			shift
@@ -125,13 +120,9 @@ rm "$rofi_input"
 if [ -n "$selected" ]; then
     selected_path="$WALL_DIR/$selected"
     if [ -f "$selected_path" ]; then
-		if ! $ONLY_COLORS; then
-			awww img "$selected_path" -t fade --transition-duration 2 --transition-fps 30 &
-			sleep 0.5
-		fi
-		if ! $ONLY_WALLS; then
-			"$HOME/.config/scripts/theme-sync.sh" --wall-path "$selected_path" &
-		fi
+		awww img "$selected_path" -t fade --transition-duration 2 --transition-fps 30 &
+		sleep 0.5
+		"$HOME/.config/scripts/theme-sync.sh" --wall-path "$selected_path" &
         wait
     fi
 fi

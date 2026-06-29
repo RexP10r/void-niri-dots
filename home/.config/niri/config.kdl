@@ -192,7 +192,7 @@ prefer-no-csd
 // ░░░░░   ░░░░░   ░░░░░░░░ ░░░░░  ░░░░░░  ░░░░░░
 
 window-rule {
-    geometry-corner-radius 15
+    geometry-corner-radius 0
     clip-to-geometry true
 }
 
@@ -210,9 +210,7 @@ binds {
 
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "alacritty"; }
     Mod+D hotkey-overlay-title="Run an Application: rofi" { spawn-sh "rofi -config ~/.config/rofi/default/config.rasi -show drun"; }
-    Mod+W hotkey-overlay-title="Change Wallpeper and colors" { spawn-sh "$HOME/.config/scripts/bgselect.sh"; }
-    Mod+Ctrl+W hotkey-overlay-title="Change colors" { spawn-sh "$HOME/.config/scripts/bgselect.sh --only-colors"; }
-    Mod+Shift+W hotkey-overlay-title="Change Wallpaper" { spawn-sh "$HOME/.config/scripts/bgselect.sh --only-walls"; }
+    Mod+W hotkey-overlay-title="Change Wallpeper and colors" { spawn-sh "$HOME/.config/scripts/custom-menu.sh"; }
 	Mod+Alt+L {
 		spawn "swaylock" "--screenshots" "--ignore-empty-password" "--daemonize" "--indicator-caps-lock" "--indicator" "--clock" "--timestr" "   %Hh %Mm %Ss" "--datestr" "   %b-%d-%Y" "--show-failed-attempts" "--indicator-idle-visible" "-f";
 	}
