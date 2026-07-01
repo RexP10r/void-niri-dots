@@ -1,9 +1,29 @@
 * {
-    background:     {{background}};
-    background-alt: {{color8}};
+/*
+ * ==========================================
+ * ROFI OPACITY REFERENCE TABLE
+ * Add these 2-character codes to the end of 
+ * your stripped hex variables: #{variable.strip}AA
+ * ==========================================
+ * 100% (Solid)       ->  FF
+ *  90%               ->  E6
+ *  80%               ->  CC
+ *  70%               ->  B3
+ *  60%               ->  99
+ *  50%               ->  80
+ *  40%               ->  66
+ *  30%               ->  4D
+ *  20%               ->  33
+ *  10%               ->  1A
+ *   0% (Transparent) ->  00
+ * ==========================================
+ */
+    background-alt: {{background}}CC;
     foreground:     {{foreground}};
+	background:     {{background}};
     selected:       {{color4}};
     border:         {{color12}};
     active:         {{color2}};
     urgent:         {{color1}};
+	sosat:			{{color1}};
 }
