@@ -6,6 +6,10 @@ configuration {
     sorting-method: "fzf";
     icon-theme: "Papirus";
     display-drun: " ";
+	kb-row-up: "Alt+k";
+    kb-row-down: "Alt+j";
+    kb-row-left: "Alt+h";
+    kb-row-right: "Alt+l";
 }
 
 @import "theme.rasi"
