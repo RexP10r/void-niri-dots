@@ -3,12 +3,24 @@
 * {
   font-family: "JetBrainsMono Nerd Font Propo";
   font-size: 16px;
-  border-radius: 0;
+  border-radius: 0px;
   box-shadow: none;
+  opacity: 99;
 }
 
+
 window#waybar {
-  background: @background;
+    background-color: transparent;
+    opacity: 0.99;
+}
+
+window#waybar > box {
+    background-color: @background;
+    opacity: 0.99;
+}
+
+.modules-left, .modules-center, .modules-right {
+    background: @background;
 }
 
 #custom-cachy:hover,
