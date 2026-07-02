@@ -23,6 +23,7 @@ die() { log_error "$*"; exit 1; }
 
 readonly NIRI_CFG="$HOME/.config/niri/config.kdl"
 readonly THEME_STATE_FILE="$HOME/.cache/theme-sync-state"
+readonly BTOP_DIR="$HOME/.config/btop"
 
 validate_deps() {
   local missing=()
@@ -93,6 +94,18 @@ map_to_wallust_theme() {
   esac
 }
 
+map_to_btop_theme() {
+  case "$1" in
+    "catppuccin")  [[ "$2" == "light" ]] && echo "catppuccin_latte.theme" || echo "catppuccin_mocha.theme" ;;
+    "everforest")  [[ "$2" == "light" ]] && echo "everforest-light-medium.theme" || echo "everforest-dark-medium.theme" ;;
+    "gruvbox")     [[ "$2" == "light" ]] && echo "gruvbox_light.theme" || echo "gruvbox_dark.theme" ;;
+    "nord")        echo "nord.theme" ;; # No nord-light in your list
+    "solarized")   [[ "$2" == "light" ]] && echo "solarized_light.theme" || echo "solarized_dark.theme" ;;
+    "tokyo-night") [[ "$2" == "light" ]] && echo "tokyo-storm.theme" || echo "tokyo-night.theme" ;;
+    *) echo "gruvbox_dark.theme" ;; # Fallback
+  esac
+}
+
 run_wallust() {
   local wallust_theme="$1" wallpaper_path="$2"
   
@@ -124,24 +137,18 @@ _get_wallust_color() {
   echo "$color"
 }
 
-update_niri_config() {
-  local palette_file="$HOME/.cache/wallust/colors.json"
-  [[ ! -f "$palette_file" ]] && return 0
+update_btop_config() {
+  local theme="$1"
+  local variation="$2"
+  local btop_conf="$BTOP_DIR/btop.conf"
+  [[ ! -f "$btop_conf" ]] && return 0
 
-  local urgent_color focus_color insert_color border_color background_color
-  urgent_color=$(_get_wallust_color "$palette_file" "color6") || true
-  focus_color=$(_get_wallust_color "$palette_file" "color5") || true
-  insert_color=$(_get_wallust_color "$palette_file" "color4") || true
-  border_color=$(_get_wallust_color "$palette_file" "color3") || true
-  background_color=$(jq -r '.special.background // empty' "$palette_file" 2>/dev/null)
-
-  [[ -n "$focus_color" ]] && sed -i "/border {/,/}/ s/active-color \".*\"/active-color \"$focus_color\"/" "$NIRI_CFG"
-  [[ -n "$border_color" ]] && sed -i "/border {/,/}/ s/inactive-color \".*\"/inactive-color \"$border_color\"/" "$NIRI_CFG"
-  [[ -n "$urgent_color" ]] && sed -i "/border {/,/}/ s/urgent-color \"[^\"]*\"/urgent-color \"$urgent_color\"/" "$NIRI_CFG"
-  [[ -n "$insert_color" ]] && sed -i "/insert-hint {/,/}/ s/color \".*\"/color \"$insert_color\"/" "$NIRI_CFG"
-  [[ -n "$background_color" ]] && sed -i "/focus-ring {/,/}/ s/active-color \".*\"/active-color \"$background_color\"/" "$NIRI_CFG"
-
-  log_success "Niri config updated"
+  local btop_theme
+  btop_theme="$BTOP_DIR/themes/$(map_to_btop_theme "$theme" "$variation")"
+  
+  sed -i "s|^color_theme = .*|color_theme = \"$btop_theme\"|" "$btop_conf"
+  
+  log_success "btop config updated to $btop_theme"
 }
 
 send_notification() {
@@ -177,15 +184,15 @@ main() {
   if [[ $theme_changed -eq 1 ]]; then
     run_wallust "$wallust_theme" "$wp"
     reload_alacritty
-    update_niri_config
     save_theme_state "$detected_theme" "$wallpaper_variation"
+	update_btop_config "$detected_theme" "$wallpaper_variation"
     send_notification
     log_success "Theme sync complete"
   else
     log_info "Theme unchanged, skipping updates"
     run_wallust "$wallust_theme" "$wp"
     reload_alacritty
-    update_niri_config
+	update_btop_config "$detected_theme" "$wallpaper_variation"
     send_notification
     log_success "Theme sync complete (no change)"
   fi
