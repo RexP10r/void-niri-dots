@@ -5,6 +5,7 @@ ROFI_CMD="rofi -config ~/.config/rofi/default/config.rasi -dmenu -i -p"
 WALLPAPER_DIR="$HOME/.config/wallpapers"
 BGSELECTOR="$HOME/.config/scripts/bgselect.sh"
 ROUNDING_SCRIPT="$HOME/.config/scripts/window-rounding.sh"
+GAPS_SCRIPT="$HOME/.config/scripts/window-gaps.sh"
 OPACITY_SCRIPT="$HOME/.config/scripts/terminal-opacity.sh"
 
 THEMES=("Catppuccin" "Nord" "Everforest" "Gruvbox" "Osaka")
@@ -17,10 +18,11 @@ show_menu() {
 
 main_menu() {
     local choice
-    choice=$(show_menu "Settings" "Window rounding" "Change wallpaper" "Terminal opacity")
+    choice=$(show_menu "Settings" "Window rounding" "Change wallpaper" "Terminal opacity" "Window gaps")
     
     case "$choice" in
         "Window rounding") window_rounding_menu ;;
+        "Window gaps") window_gaps_menu ;;
         "Change wallpaper") wallpaper_theme_menu ;;
 		"Terminal opacity") terminal_opacity_menu ;;
         "") exit 0 ;;
@@ -92,29 +94,31 @@ wallpaper_theme_menu() {
     esac
 }
 
-wallpaper_variation_menu() {
-    local theme="$1"
+window_gaps_menu() {
     local choice
-    choice=$(show_menu "$theme variation" "Dark" "Light" "Back to theme selection menu")
+    choice=$(show_menu "Window gaps" "16 (Niri 32)" "8 (Niri 16)" "4 (Niri 8)" "0 (Niri 0)" "Custom" "Back to main menu")
     
     case "$choice" in
-        "Dark")
-            local path="$WALLPAPER_DIR/$theme/dark"
-            if [[ -d "$path" ]]; then
-                "$BGSELECTOR" --wall-dir "$path"
-            else
-                notify-send "Error" "Directory not found: $path"
+        "16 (Niri 32)")
+            "$GAPS_SCRIPT" 16
+            ;;
+        "8 (Niri 16)")
+            "$GAPS_SCRIPT" 8
+            ;;
+        "4 (Niri 8)")
+            "$GAPS_SCRIPT" 4
+            ;;
+        "0 (Niri 0)")
+            "$GAPS_SCRIPT" 0
+            ;;
+        "Custom")
+            local custom
+            custom=$(echo "" | rofi -dmenu -p "Enter Waybar gap value")
+            if [[ -n "$custom" && "$custom" =~ ^[0-9]+$ ]]; then
+				"$GAPS_SCRIPT" "$custom"
             fi
             ;;
-        "Light")
-            local path="$WALLPAPER_DIR/$theme/light"
-            if [[ -d "$path" ]]; then
-                "$BGSELECTOR" --wall-dir "$path"
-            else
-                notify-send "Error" "Directory not found: $path"
-            fi
-            ;;
-        ""|"Back to theme selection menu") wallpaper_theme_menu ;;
+        ""|"Back to main menu") main_menu ;;
     esac
 }
 

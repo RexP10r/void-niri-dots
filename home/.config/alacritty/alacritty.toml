@@ -11,7 +11,7 @@ unfocused_hollow = true
 hide_when_typing = true
 
 [window]
-opacity = 1.00
+opacity = 0.90
 
 [window.class]
 instance = "Alacritty"
