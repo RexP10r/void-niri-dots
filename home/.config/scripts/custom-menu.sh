@@ -4,6 +4,8 @@ set -euo pipefail
 ROFI_CMD="rofi -config ~/.config/rofi/default/config.rasi -dmenu -i -p"
 WALLPAPER_DIR="$HOME/.config/wallpapers"
 BGSELECTOR="$HOME/.config/scripts/bgselect.sh"
+ROUNDING_SCRIPT="$HOME/.config/scripts/window-rounding.sh"
+OPACITY_SCRIPT="$HOME/.config/scripts/terminal-opacity.sh"
 
 THEMES=("Catppuccin" "Nord" "Everforest" "Gruvbox" "Osaka")
 
@@ -15,11 +17,12 @@ show_menu() {
 
 main_menu() {
     local choice
-    choice=$(show_menu "Settings" "Window rounding" "Change wallpaper")
+    choice=$(show_menu "Settings" "Window rounding" "Change wallpaper" "Terminal opacity")
     
     case "$choice" in
         "Window rounding") window_rounding_menu ;;
         "Change wallpaper") wallpaper_theme_menu ;;
+		"Terminal opacity") terminal_opacity_menu ;;
         "") exit 0 ;;
     esac
 }
@@ -30,16 +33,41 @@ window_rounding_menu() {
     
     case "$choice" in
         "On (8px)")
-            "$HOME/.config/scripts/rounding.sh" 8
+			"$ROUNDING_SCRIPT" 8
             ;;
         "Off (0px)")
-            "$HOME/.config/scripts/rounding.sh" 0
+			"$ROUNDING_SCRIPT" 0
             ;;
         "Custom")
             local custom
-            custom=$(echo "" | rofi -dmenu -p "Enter radius value")
+            custom=$(echo "" | rofi -config ~/.config/rofi/default/config.rasi -dmenu -p "Enter radius value")
             if [[ -n "$custom" && "$custom" =~ ^[0-9]+$ ]]; then
-                "$HOME/.config/scripts/rounding.sh" "$custom"
+                "$ROUNDING_SCRIPT" "$custom"
+            fi
+            ;;
+        ""|"Back to main menu") main_menu ;;
+    esac
+}
+
+terminal_opacity_menu() {
+    local choice
+    choice=$(show_menu "Terminal opacity" "100%" "90%" "80%" "Custom" "Back to main menu")
+    
+    case "$choice" in
+        "100%")
+			"$OPACITY_SCRIPT" 100
+            ;;
+        "90%")
+			"$OPACITY_SCRIPT" 90
+            ;;
+        "80%")
+			"$OPACITY_SCRIPT" 80
+            ;;
+        "Custom")
+            local custom
+            custom=$(echo "" | rofi -config ~/.config/rofi/default/config.rasi -dmenu -p "Enter opacity percentage (0-100)")
+            if [[ -n "$custom" && "$custom" =~ ^[0-9]+$ && "$custom" -ge 0 && "$custom" -le 100 ]]; then
+				"$OPACITY_SCRIPT" "$custom"
             fi
             ;;
         ""|"Back to main menu") main_menu ;;

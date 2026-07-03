@@ -10,6 +10,9 @@ unfocused_hollow = true
 [mouse]
 hide_when_typing = true
 
+[window]
+opacity = 1.00
+
 [window.class]
 instance = "Alacritty"
 general = "Alacritty"
