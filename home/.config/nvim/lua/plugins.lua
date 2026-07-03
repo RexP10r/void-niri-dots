@@ -2,9 +2,20 @@ _G.nvim_start_time = vim.uv.hrtime()
 
 vim.pack.add({
 	{ src = "https://github.com/folke/tokyonight.nvim" },
+	{ src = "https://github.com/neanias/everforest-nvim" },
+	{ src = "https://github.com/ellisonleao/gruvbox.nvim" },
+	{ src = "https://github.com/gbprod/nord.nvim" },
 })
 
-require("tokyonight").setup({})
+require("tokyonight").setup({
+})
+
+require("everforest").setup({
+	background = "medium",
+})
+
+require("gruvbox").setup({})
+require("nord").setup({})
 
 
 vim.pack.add({
