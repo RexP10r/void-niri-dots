@@ -48,21 +48,16 @@ detect_theme_from_wallpaper() {
   local wallpaper_path="$1"
   [[ -f "$wallpaper_path" ]] || die "Wallpaper not found: $wallpaper_path"
 
-  local theme_dir parent_dir theme_name variation
+  local theme_dir theme_name
   theme_dir=$(dirname "$wallpaper_path")
-  parent_dir=$(dirname "$theme_dir")
+  theme_name=$(basename "$theme_dir" | tr '[:upper:]' '[:lower:]')
 
-  theme_name=$(basename "$parent_dir" | tr '[:upper:]' '[:lower:]')
-  variation=$(basename "$theme_dir" | tr '[:upper:]' '[:lower:]')
-
-  # Handle flat directories
-  if [[ "$theme_name" == ".config" || "$theme_name" == "pictures" || "$variation" == "wallpapers" ]]; then
+  # Handle generic parent directories (fallback to random theme)
+  if [[ "$theme_name" == ".config" || "$theme_name" == "pictures" || "$theme_name" == "wallpapers" ]]; then
     theme_name="random"
-    variation="dark"
   fi
 
   WALLPAPER_PATH="$wallpaper_path"
-  WALLPAPER_VARIATION="$variation"
   DETECTED_THEME="$theme_name"
 }
 
@@ -70,39 +65,39 @@ check_theme_changed() {
   mkdir -p "$(dirname "$THEME_STATE_FILE")"
   [[ ! -f "$THEME_STATE_FILE" ]] && return 0
 
-  local previous_theme previous_variation
-  read -r previous_theme previous_variation < "$THEME_STATE_FILE"
+  local previous_theme
+  read -r previous_theme < "$THEME_STATE_FILE"
 
-  [[ "$1" == "$previous_theme" && "$2" == "$previous_variation" ]] && return 1
+  [[ "$1" == "$previous_theme" ]] && return 1
   return 0
 }
 
 save_theme_state() {
   mkdir -p "$(dirname "$THEME_STATE_FILE")"
-  echo "$1 $2" > "$THEME_STATE_FILE"
+  echo "$1" > "$THEME_STATE_FILE"
 }
 
 map_to_wallust_theme() {
   case "$1" in
-    "catppuccin")  [[ "$2" == "light" ]] && echo "Catppuccin-Latte" || echo "Catppuccin-Mocha" ;;
-    "everforest")  [[ "$2" == "light" ]] && echo "Everforest-Light-Medium" || echo "Everforest-Dark-Medium" ;;
-    "gruvbox")     [[ "$2" == "light" ]] && echo "Gruvbox" || echo "Gruvbox-Dark" ;;
-    "nord")        [[ "$2" == "light" ]] && echo "Nord-Light" || echo "Nord" ;;
-    "solarized")   [[ "$2" == "light" ]] && echo "Solarized-Light" || echo "Solarized-Dark" ;;
-    "tokyo-night") [[ "$2" == "light" ]] && echo "Tokyo-Night-Light" || echo "Tokyo-Night" ;;
+    "catppuccin")  echo "Catppuccin-Mocha" ;;
+    "everforest")  echo "Everforest-Dark-Medium" ;;
+    "gruvbox")     echo "Gruvbox-Dark" ;;
+    "nord")        echo "Nord" ;;
+    "solarized")   echo "Solarized-Dark" ;;
+    "tokyo-night") echo "Tokyo-Night" ;;
     *) echo "random" ;;
   esac
 }
 
 map_to_btop_theme() {
   case "$1" in
-    "catppuccin")  [[ "$2" == "light" ]] && echo "catppuccin_latte.theme" || echo "catppuccin_mocha.theme" ;;
-    "everforest")  [[ "$2" == "light" ]] && echo "everforest-light-medium.theme" || echo "everforest-dark-medium.theme" ;;
-    "gruvbox")     [[ "$2" == "light" ]] && echo "gruvbox_light.theme" || echo "gruvbox_dark.theme" ;;
-    "nord")        echo "nord.theme" ;; # No nord-light in your list
-    "solarized")   [[ "$2" == "light" ]] && echo "solarized_light.theme" || echo "solarized_dark.theme" ;;
-    "tokyo-night") [[ "$2" == "light" ]] && echo "tokyo-storm.theme" || echo "tokyo-night.theme" ;;
-    *) echo "gruvbox_dark.theme" ;; # Fallback
+    "catppuccin")  echo "catppuccin_mocha.theme" ;;
+    "everforest")  echo "everforest-dark-medium.theme" ;;
+    "gruvbox")     echo "gruvbox_dark.theme" ;;
+    "nord")        echo "nord.theme" ;;
+    "solarized")   echo "solarized_dark.theme" ;;
+    "tokyo-night") echo "tokyo-night.theme" ;;
+    *) echo "gruvbox_dark.theme" ;;
   esac
 }
 
@@ -139,12 +134,11 @@ _get_wallust_color() {
 
 update_btop_config() {
   local theme="$1"
-  local variation="$2"
   local btop_conf="$BTOP_DIR/btop.conf"
   [[ ! -f "$btop_conf" ]] && return 0
 
   local btop_theme
-  btop_theme="$BTOP_DIR/themes/$(map_to_btop_theme "$theme" "$variation")"
+  btop_theme="$BTOP_DIR/themes/$(map_to_btop_theme "$theme")"
   
   sed -i "s|^color_theme = .*|color_theme = \"$btop_theme\"|" "$btop_conf"
   
@@ -169,30 +163,29 @@ main() {
 
   detect_theme_from_wallpaper "$wp"
   local detected_theme="${DETECTED_THEME:-random}"
-  local wallpaper_variation="${WALLPAPER_VARIATION:-dark}"
 
-  log_info "Theme: $detected_theme ($wallpaper_variation)"
+  log_info "Theme: $detected_theme"
 
   local theme_changed=0
-  if [[ "$FORCE" == true ]] || check_theme_changed "$detected_theme" "$wallpaper_variation"; then
+  if [[ "$FORCE" == true ]] || check_theme_changed "$detected_theme"; then
     theme_changed=1
   fi
 
   local wallust_theme
-  wallust_theme=$(map_to_wallust_theme "$detected_theme" "$wallpaper_variation")
+  wallust_theme=$(map_to_wallust_theme "$detected_theme")
 
   if [[ $theme_changed -eq 1 ]]; then
     run_wallust "$wallust_theme" "$wp"
     reload_alacritty
-    save_theme_state "$detected_theme" "$wallpaper_variation"
-	update_btop_config "$detected_theme" "$wallpaper_variation"
+    save_theme_state "$detected_theme"
+    update_btop_config "$detected_theme"
     send_notification
     log_success "Theme sync complete"
   else
     log_info "Theme unchanged, skipping updates"
     run_wallust "$wallust_theme" "$wp"
     reload_alacritty
-	update_btop_config "$detected_theme" "$wallpaper_variation"
+    update_btop_config "$detected_theme"
     send_notification
     log_success "Theme sync complete (no change)"
   fi

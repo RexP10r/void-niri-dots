@@ -60,7 +60,7 @@ wallpaper_theme_menu() {
             "$BGSELECTOR" --wall-dir "$WALLPAPER_DIR"
             ;;
         ""|"Back to main menu") main_menu ;;
-        *) wallpaper_variation_menu "$theme_lower" ;;
+        *) "$BGSELECTOR" --wall-dir "$WALLPAPER_DIR/$theme_lower" ;;
     esac
 }
 
