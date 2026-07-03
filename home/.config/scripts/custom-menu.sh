@@ -7,6 +7,7 @@ BGSELECTOR="$HOME/.config/scripts/bgselect.sh"
 ROUNDING_SCRIPT="$HOME/.config/scripts/window-rounding.sh"
 GAPS_SCRIPT="$HOME/.config/scripts/window-gaps.sh"
 OPACITY_SCRIPT="$HOME/.config/scripts/terminal-opacity.sh"
+WAYBAR_BG_SCRIPT="$HOME/.config/scripts/waybar-bg.sh"
 
 THEMES=("Catppuccin" "Nord" "Everforest" "Gruvbox" "Osaka")
 
@@ -18,13 +19,14 @@ show_menu() {
 
 main_menu() {
     local choice
-    choice=$(show_menu "Settings" "Window rounding" "Change wallpaper" "Terminal opacity" "Window gaps")
+    choice=$(show_menu "Settings" "Window rounding" "Change wallpaper" "Terminal opacity" "Window gaps" "Switch waybar bg trasparency")
     
     case "$choice" in
         "Window rounding") window_rounding_menu ;;
         "Window gaps") window_gaps_menu ;;
         "Change wallpaper") wallpaper_theme_menu ;;
 		"Terminal opacity") terminal_opacity_menu ;;
+		"Switch waybar bg trasparency") waybar_bg_transparency_switch ;;
         "") exit 0 ;;
     esac
 }
@@ -120,6 +122,10 @@ window_gaps_menu() {
             ;;
         ""|"Back to main menu") main_menu ;;
     esac
+}
+
+waybar_bg_transparency_switch() {
+	"$WAYBAR_BG_SCRIPT"
 }
 
 # --- Main Execution ---
