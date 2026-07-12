@@ -24,6 +24,7 @@ die() { log_error "$*"; exit 1; }
 readonly NIRI_CFG="$HOME/.config/niri/config.kdl"
 readonly THEME_STATE_FILE="$HOME/.cache/theme-sync-state"
 readonly BTOP_DIR="$HOME/.config/btop"
+readonly OBSIDIAN_APPEARANCE="$HOME/shaitan/knowledge/.obsidian/appearance.json"
 
 validate_deps() {
   local missing=()
@@ -83,7 +84,7 @@ map_to_wallust_theme() {
     "everforest")  echo "Everforest-Dark-Medium" ;;
     "gruvbox")     echo "Gruvbox-Dark" ;;
     "nord")        echo "Nord" ;;
-    "solarized")   echo "Solarized-Dark" ;;
+    "solarized"|"osaka")   echo "Solarized-Dark" ;;
     "tokyo-night") echo "Tokyo-Night" ;;
     *) echo "random" ;;
   esac
@@ -95,9 +96,21 @@ map_to_btop_theme() {
     "everforest")  echo "everforest-dark-medium.theme" ;;
     "gruvbox")     echo "gruvbox_dark.theme" ;;
     "nord")        echo "nord.theme" ;;
-    "solarized")   echo "solarized_dark.theme" ;;
+    "solarized"|"osaka")   echo "solarized_dark.theme" ;;
     "tokyo-night") echo "tokyo-night.theme" ;;
-    *) echo "gruvbox_dark.theme" ;;
+    *) echo "solarized_dark.theme" ;;
+  esac
+}
+
+map_to_obsidian_theme() {
+  case "$1" in
+    "catppuccin")  echo "Catppuccin" ;;
+    "everforest")  echo "Everforest Spruce" ;;
+    "gruvbox")     echo "Obsidian gruvbox" ;;
+    "nord")        echo "Obsidian Nord" ;;
+    "solarized"|"osaka")   echo "Solarized" ;;
+    "tokyo-night") echo "Tokyo Night" ;;
+    *) echo "" ;;
   esac
 }
 
@@ -145,6 +158,24 @@ update_btop_config() {
   log_success "btop config updated to $btop_theme"
 }
 
+update_obsidian_theme() {
+  local theme="$1"
+  [[ ! -f "$OBSIDIAN_APPEARANCE" ]] && return 0
+
+  local obsidian_theme
+  obsidian_theme=$(map_to_obsidian_theme "$theme")
+  
+  if [[ -z "$obsidian_theme" ]]; then
+    jq '.cssTheme = "" | .theme = "obsidian"' "$OBSIDIAN_APPEARANCE" > "${OBSIDIAN_APPEARANCE}.tmp" && \
+      mv "${OBSIDIAN_APPEARANCE}.tmp" "$OBSIDIAN_APPEARANCE"
+  else
+    jq --arg theme "$obsidian_theme" '.cssTheme = $theme | .theme = "obsidian"' "$OBSIDIAN_APPEARANCE" > "${OBSIDIAN_APPEARANCE}.tmp" && \
+      mv "${OBSIDIAN_APPEARANCE}.tmp" "$OBSIDIAN_APPEARANCE"
+  fi
+  
+  log_success "Obsidian theme updated to: ${obsidian_theme:-default}"
+}
+
 send_notification() {
   command -v notify-send >/dev/null 2>&1 && \
     notify-send -t 2000 -u low "Theme Synced" "Colors updated" 2>/dev/null || true
@@ -179,6 +210,7 @@ main() {
     reload_alacritty
     save_theme_state "$detected_theme"
     update_btop_config "$detected_theme"
+	update_obsidian_theme "$detected_theme"
     send_notification
     log_success "Theme sync complete"
   else
@@ -186,6 +218,7 @@ main() {
     run_wallust "$wallust_theme" "$wp"
     reload_alacritty
     update_btop_config "$detected_theme"
+	update_obsidian_theme "$detected_theme"
     send_notification
     log_success "Theme sync complete (no change)"
   fi
