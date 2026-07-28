@@ -1,8 +1,7 @@
 vim.lsp.enable({
 	"rust-analyzer",
 	"lua_ls",
---	"ruff",
-	"pylsp",
+	"ruff",
 	"basedpyright",
 })
 
